@@ -1,0 +1,83 @@
+use vitcampus;
+
+CREATE TABLE persons(
+	ID int NOT NULL,
+	LastName varchar(255) NOT NULL,
+	FirstName varchar(255) NOT NULL,
+    Age int
+);
+desc persons;
+
+INSERT INTO persons VALUES (101, 'Tulsiani', 'Shrish', null);
+SELECT * FROM persons;
+
+ALTER TABLE persons ADD UNIQUE (Age);
+DESC persons;
+
+ALTER TABLE persons
+DROP CONSTRAINT Age;
+DESC persons;
+
+CREATE TABLE humans (
+	Age INT NOT NULL,
+    CHECK (Age >= 18 AND Age <= 35)
+);
+DESC humans;
+
+INSERT INTO humans VALUES (25);
+INSERT INTO humans VALUES (54);
+
+CREATE TABLE kids (
+Age INT NOT NULL,
+City VARCHAR(255) DEFAULT 'Lucknow'
+);
+DESC kids;
+
+INSERT INTO kids VALUES (15, "Mumbai");
+INSERT INTO kids (Age) VALUES (37);
+
+ALTER TABLE kids
+ADD CHECK (Age < 18);
+
+INSERT INTO kids (Age) VALUES (25);
+
+SELECT * FROM kids;
+
+CREATE TABLE products(
+	pid INT PRIMARY KEY,
+    pname VARCHAR(100) NOT NULL,
+    prefNo INT NOT NULL UNIQUE
+);
+DESC products;
+
+INSERT INTO products VALUES (102, "furniture", 19930);
+SELECT * FROM products;
+
+ALTER TABLE persons
+ADD PRIMARY KEY (ID);
+
+ALTER TABLE persons
+DROP PRIMARY KEY;
+
+CREATE TABLE category (
+	cid INT PRIMARY KEY,
+    cname VARCHAR(100) NOT NULL
+);
+
+
+INSERT INTO category VALUES (101, 'Electronics');
+INSERT INTO category VALUES (102, 'Home Appliance');
+SELECT * FROM category;
+
+CREATE TABLE products(
+	pid INT PRIMARY KEY,
+    pname VARCHAR(100) NOT NULL,
+    cid int,
+    FOREIGN KEY (cid) REFERENCES category (cid)
+);
+DESC products;
+SELECT * FROM products;
+
+INSERT INTO products VALUES (501, 'HP LAPTOP', 101);
+INSERT INTO products VALUES (502, 'Washing Machine', 102);
+INSERT INTO products VALUES (503, 'Power Bank', 101);

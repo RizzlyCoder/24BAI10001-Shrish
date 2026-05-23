@@ -1,0 +1,163 @@
+1. List the Employee Name, their Department Name, and the Location Name for all employees.
+
+SELECT employee_name, dept_name, location_id
+FROM employees
+JOIN departments 
+ON employees.dept_id = departments.dept_id;
+
+
+
+3.
+Find the names of Employees who have worked on a project with Client Name 'GlobalTech Solutions'. List the Employee Name and Project Name.
+
+SELECT DISTINCT employee_name, project_name
+FROM employees
+JOIN assignments
+ON employees.employee_id = assignments.employee_id
+JOIN projects
+ON assignments.project_id  = projects.project_id
+WHERE client_name = 'GlobalTech Solutions';
+
+
+
+4.List all Departments that have no Employees currently assigned to them.
+
+SELECT dept_name
+FROM departments
+WHERE dept_id NOT IN (
+  SELECT DISTINCT dept_id
+  FROM employees
+  WHERE dept_id IS NOT NULL
+);
+
+
+
+6. Calculate the Average Hours Worked per Employee across all projects. List the Employee Name and the average hours.
+
+SELECT employee_name, AVG(hours_worked)
+FROM employees
+JOIN assignments
+ON employees.employee_id = assignments.employee_id
+GROUP BY employee_id, employee_name;
+
+
+
+7.
+Find the Department Name(s) that have an average salary above the company-wide average salary.
+
+SELECT dept_name, AVG(salary)
+FROM employees
+JOIN departments
+ON employees.dept_id = departments.dept_id
+GROUP BY dept_id
+HAVING  AVG(salary) > (
+  SELECT AVG(salary) 
+  FROM employees
+);
+
+
+
+8. Identify the Client Name(s) whose projects have a total combined hours worked exceeding 500 hours.
+
+SELECT client_name, SUM(hours_worked)
+FROM projects
+JOIN assignments
+ON projects.project_id = assignments.project_id
+GROUP BY client_name
+HAVING SUM(hours_worked) > 500;
+
+
+
+10. Calculate the total number of employees assigned to each Project, but only include projects that have more than 5 employees assigned.
+
+SELECT project_name, COUNT(employee_id)
+FROM projects
+JOIN assignments
+ON projects.project_id = assignments.project_id
+GROUP BY project_id, project_name
+HAVING COUNT(a.employee_id) > 5;
+
+
+
+12. Retrieve the Department Name(s) that have employees assigned to more than one project.
+
+SELECT DISTINCT dept_name
+FROM departments
+JOIN employees
+ON departments.dept_id = employees.dept_id
+JOIN assignments
+ON employees.employee_id = assignments.employee_id
+GROUP BY dept_id
+HAVING COUNT(DISTINCT project_id) > 1;
+
+
+
+13. Write a query to list the Employee Name and Project Name for any employee who has worked less than 10 hours on a project.
+
+SELECT employee_name, project_name, hours_worked
+FROM assignments
+JOIN employees
+ON assignments.employee_id = employees.employee_id
+JOIN projects
+ON assignments.project_id  = projects.project_id
+WHERE hours_worked < 10;
+
+
+
+14. Find the Project Name(s) that have no assigned employees.
+
+SELECT project_name
+FROM projects
+WHERE project_id NOT IN (
+  SELECT DISTINCT project_id 
+  FROM assignments
+);
+
+
+
+15. Select the Employee Name(s) whose salary is greater than the maximum salary in their own department.
+
+SELECT employee_name, salary
+FROM employees
+WHERE salary > (
+  SELECT MAX(e.salary)
+  FROM employees e
+  WHERE e.dept_id = dept_id
+  AND  e.employee_id != employee_id
+);
+
+
+
+16. Assuming the Assignments table has a start_date column, find the Employee Name and their oldest project start date.
+
+SELECT employee_name, MIN(start_date)
+FROM employees
+JOIN assignments
+ON employees.employee_id = assignments.employee_id
+GROUP BY employee_id;
+
+
+
+17. Write a MySQL query using the DATE_FORMAT function to list all projects that were active in the year 2023.
+
+SELECT project_name, start_date
+FROM projects
+WHERE  DATE_FORMAT(start_date, '%Y') = '2023';
+
+
+
+18. Use the MySQL-specific IFNULL function to list all Employee Names. If an employee has no manager, display "CEO" instead of NULL.
+
+SELECT employee_name, IFNULL(e2.employee_name, 'CEO')
+FROM employees e1
+LEFT JOIN employees e2 
+ON e1.manager_id = e2.employee_id;
+
+
+
+21. List the Employee Name and their Manager's Name, even if the employee has no manager, or if a potential manager has no employees reporting to them.
+
+SELECT employee_name, IFNULL(e2.employee_name, 'No Manager') AS manager_name
+FROM employees e1
+LEFT JOIN employees e2 
+ON e1.manager_id = e2.employee_id;

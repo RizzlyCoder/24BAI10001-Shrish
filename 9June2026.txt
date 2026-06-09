@@ -1,0 +1,62 @@
+Microsoft Windows [Version 10.0.26200.8524]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Windows\System32>cd /
+
+C:\>mkdir data
+
+C:\>cd data
+
+C:\data>mkdir db0
+
+C:\data>cd db0
+
+C:\data\db0>cd /
+
+C:\>cd data
+
+C:\data>mkdir db1
+
+C:\data>mkdir db2
+
+C:\data>where mongod
+INFO: Could not find files for the given pattern(s).
+
+C:\data>dir "C:\Program Files\MongoDB\Server"
+ Volume in drive C is OS
+ Volume Serial Number is A890-CB57
+
+ Directory of C:\Program Files\MongoDB\Server
+
+15-05-2026  19:32    <DIR>          .
+15-05-2026  19:32    <DIR>          ..
+15-05-2026  19:32    <DIR>          8.3
+               0 File(s)              0 bytes
+               3 Dir(s)  18,513,252,352 bytes free
+
+C:\data>where mongod
+INFO: Could not find files for the given pattern(s).
+
+C:\data>net stop MongoDB
+The MongoDB Server (MongoDB) service is stopping.
+The MongoDB Server (MongoDB) service was stopped successfully.
+
+
+C:\data>sc query MongoDB
+
+SERVICE_NAME: MongoDB
+        TYPE               : 10  WIN32_OWN_PROCESS
+        STATE              : 1  STOPPED
+        WIN32_EXIT_CODE    : 0  (0x0)
+        SERVICE_EXIT_CODE  : 0  (0x0)
+        CHECKPOINT         : 0x0
+        WAIT_HINT          : 0x0
+
+
+"C:\Program Files\MongoDB\Server\8.3\bin\mongod.exe" --replSet myRepSet --dbpath C:\data\db0 --port 27017
+
+
+"C:\Program Files\MongoDB\Server\8.3\bin\mongod.exe" --replSet myRepSet --dbpath C:\data\db1 --port 27018
+
+
+"C:\Program Files\MongoDB\Server\8.3\bin\mongod.exe" --replSet myRepSet --dbpath C:\data\db2 --port 27019

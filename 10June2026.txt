@@ -1,0 +1,170 @@
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Windows\System32>net stop MongoDB
+The MongoDB Server (MongoDB) service is not started.
+
+More help is available by typing NET HELPMSG 3521.
+
+
+C:\Windows\System32>cd /
+
+C:\>cd/ data
+The system cannot find the path specified.
+
+C:\>cd /data
+The system cannot find the path specified.
+
+C:\>sc query MongoDB
+
+SERVICE_NAME: MongoDB
+        TYPE               : 10  WIN32_OWN_PROCESS
+        STATE              : 1  STOPPED
+        WIN32_EXIT_CODE    : 0  (0x0)
+        SERVICE_EXIT_CODE  : 0  (0x0)
+        CHECKPOINT         : 0x0
+        WAIT_HINT          : 0x0
+
+
+C:\Windows\System32>"C:\Program Files\MongoDB\Server\8.3\bin\mongod.exe" --replSet myReplSet --dbpath C:\data\db0 --port 27017 --bind_ip localhost
+
+C:\Windows\System32>"C:\Program Files\MongoDB\Server\8.3\bin\mongod.exe" --replSet myReplSet --dbpath C:\data\db1 --port 27018 --bind_ip localhost
+
+C:\Windows\System32>"C:\Program Files\MongoDB\Server\8.3\bin\mongod.exe" --replSet myReplSet --dbpath C:\data\db2 --port 27019 --bind_ip localhost
+
+
+rs.initiate({
+  _id: "myReplSet",
+  members: [
+    { _id: 0, host: "localhost:27017" },
+    { _id: 1, host: "localhost:27018" },
+    { _id: 2, host: "localhost:27019" }
+  ]
+})
+{
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1781097395, i: 1 }),
+    signature: {
+      hash: Binary.createFromBase64('AAAAAAAAAAAAAAAAAAAAAAAAAAA=', 0),
+      keyId: Long('0')
+    }
+  },
+  operationTime: Timestamp({ t: 1781097395, i: 1 })
+}
+rs.status()
+{
+      syncSourceHost: '',
+      syncSourceId: -1,
+      infoMessage: 'Could not find member to sync from',
+      electionTime: Timestamp({ t: 1781097406, i: 1 }),
+      electionDate: 2026-06-10T13:16:46.000Z,
+      configVersion: 1,
+      configTerm: 1,
+      self: true,
+      lastHeartbeatMessage: ''
+    },
+    {
+      _id: 1,
+      name: 'localhost:27018',
+      health: 1,
+      state: 2,
+      stateStr: 'SECONDARY',
+      uptime: 16,
+      optime: { ts: Timestamp({ t: 1781097407, i: 16 }), t: Long('1') },
+      optimeDurable: { ts: Timestamp({ t: 1781097407, i: 16 }), t: Long('1') },
+      optimeWritten: { ts: Timestamp({ t: 1781097407, i: 16 }), t: Long('1') },
+      optimeDate: 2026-06-10T13:16:47.000Z,
+      optimeDurableDate: 2026-06-10T13:16:47.000Z,
+      optimeWrittenDate: 2026-06-10T13:16:47.000Z,
+      lastAppliedWallTime: 2026-06-10T13:16:47.153Z,
+      lastDurableWallTime: 2026-06-10T13:16:47.153Z,
+      lastWrittenWallTime: 2026-06-10T13:16:47.153Z,
+      lastHeartbeat: 2026-06-10T13:16:51.013Z,
+      lastHeartbeatRecv: 2026-06-10T13:16:52.030Z,
+      pingMs: Long('0'),
+      lastHeartbeatMessage: '',
+      syncSourceHost: 'localhost:27017',
+      syncSourceId: 0,
+      infoMessage: '',
+      configVersion: 1,
+      configTerm: 1
+    },
+    {
+      _id: 2,
+      name: 'localhost:27019',
+      health: 1,
+      state: 2,
+      stateStr: 'SECONDARY',
+      uptime: 16,
+      optime: { ts: Timestamp({ t: 1781097407, i: 16 }), t: Long('1') },
+      optimeDurable: { ts: Timestamp({ t: 1781097407, i: 16 }), t: Long('1') },
+      optimeWritten: { ts: Timestamp({ t: 1781097407, i: 16 }), t: Long('1') },
+      optimeDate: 2026-06-10T13:16:47.000Z,
+      optimeDurableDate: 2026-06-10T13:16:47.000Z,
+      optimeWrittenDate: 2026-06-10T13:16:47.000Z,
+      lastAppliedWallTime: 2026-06-10T13:16:47.153Z,
+      lastDurableWallTime: 2026-06-10T13:16:47.153Z,
+      lastWrittenWallTime: 2026-06-10T13:16:47.153Z,
+      lastHeartbeat: 2026-06-10T13:16:50.999Z,
+      lastHeartbeatRecv: 2026-06-10T13:16:52.003Z,
+      pingMs: Long('0'),
+      lastHeartbeatMessage: '',
+      syncSourceHost: 'localhost:27017',
+      syncSourceId: 0,
+      infoMessage: '',
+      configVersion: 1,
+      configTerm: 1
+    }
+  ],
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1781097407, i: 16 }),
+    signature: {
+      hash: Binary.createFromBase64('AAAAAAAAAAAAAAAAAAAAAAAAAAA=', 0),
+      keyId: Long('0')
+    }
+  },
+  operationTime: Timestamp({ t: 1781097407, i: 16 })
+}
+use college
+switched to db college
+db.students.insertOne({
+  name: "Yash",
+  course: "MongoDB"
+})
+
+
+
+rs.secondaryOk()
+DeprecationWarning: .setSecondaryOk() is deprecated. Use .setReadPref("primaryPreferred") instead
+Setting read preference from "primary" to "primaryPreferred"
+use college
+switched to db college
+db.students.find()
+{
+  _id: ObjectId('6a2963ee3cbb886f6b1bb31a'),
+  name: 'Yash',
+  course: 'MongoDB'
+}
+myReplSet [direct: secondary] college
+
+
+
+
+mkdir -p ~/data/config
+
+
+mongod --configsvr --replSet configReplSet --dbpath ~/data/config --port 27019
+
+rs.initiate({
+_id: "configReplSet",
+configsvr: true,
+members: [{ _id: 0, host: "localhost:27019" }]
+})
+
+
+mkdir -p ~/data/shard1 ~/data/shard2
+
+mongod --shardsvr --replSet shard1ReplSet --dbpath ~/data/shard1 --port 27011
+
+mongod --shardsvr --replSet shard2ReplSet --dbpath ~/data/shard2 --port 27012
